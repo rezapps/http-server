@@ -1,0 +1,14 @@
+{
+  "name": "http-server",
+  "description": "Build your own HTTP server",
+  "type": "module",
+  "main": "app/main.ts",
+  "scripts": {
+    "dev": "tsx app/main.ts && node app/main.js",
+    "build": "tsx app/main.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2"
+  }
+}
