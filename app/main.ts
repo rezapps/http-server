@@ -31,6 +31,19 @@ const server = net.createServer((socket) => {
 		`Content-Length: ${contentLength}\r\n` +
 		`\r\n`;
 		}
+		else if (path === '/user-agent') {
+			const userAgentHeader = request
+				.split('\r\n')
+				.find((line) => line.startsWith('User-Agent: '));
+			const userAgent = userAgentHeader ? userAgentHeader.split(': ')[1] : 'Unknown User-Agent';
+			responseBody = userAgent;
+			contentType = 'text/plain';
+			contentLength = responseBody.length;
+			responseHeaders = `HTTP/1.1 200 OK\r\n` +
+				`Content-Type: ${contentType}\r\n` +
+				`Content-Length: ${contentLength}\r\n` +
+				`\r\n`;
+		}
 		else {
 			responseBody = '404 Not Found';
 			contentType = 'text/plain';
