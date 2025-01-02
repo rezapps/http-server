@@ -1,16 +1,17 @@
 import * as net from "net";
 import assert from 'assert';
 
-const expectedResponse = `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 3\r\n\r\nabc`;
+const expectedResponse = `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nContent-Length: 12\r\n\r\nfoobar/1.2.3`;
 
-function testResponseBody() {
+
+function testUserAgent() {
 	return new Promise<void>((resolve, reject) => {
 		const client = new net.Socket();
 
 		client.connect(4221, 'localhost', () => {
 			console.log('Connected to server');
 
-			const request = `GET /echo/abc HTTP/1.1\r\nHost: localhost:4221\r\nUser-Agent: curl/7.64.1\r\nAccept: */*\r\n\r\n`;
+			const request = `GET /user-agent HTTP/1.1\r\nHost: localhost:4221\r\nUser-Agent: foobar/1.2.3\r\nAccept: */*\r\n\r\n`;
 			client.write(request);
 		});
 
@@ -21,6 +22,7 @@ function testResponseBody() {
 
 		client.on('end', () => {
 			try {
+				console.log('Server response:', JSON.stringify(responseData));
 				assert.strictEqual(responseData, expectedResponse, 'Response does not match the expected output');
 				console.log('Test passed: The response matches the expected output');
 				resolve();
@@ -37,4 +39,4 @@ function testResponseBody() {
 	});
 }
 
-testResponseBody().catch(() => process.exit(1));
+testUserAgent().catch(() => process.exit(1));

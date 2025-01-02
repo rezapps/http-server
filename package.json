@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsx app/main.ts",
     "build": "tsx app/main.ts",
-		"test": "tsx __tests__/responseBody.ts"
+		"test_response_body": "tsx __tests__/responseBody.ts",
+		"test_user_agent": "tsx __tests__/userAgent.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
