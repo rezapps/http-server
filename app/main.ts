@@ -1,4 +1,5 @@
-import * as net from "net";
+import * as net from 'net';
+import * as fs from 'fs';
 
 const PORT = 4221;
 
@@ -17,9 +18,9 @@ const server = net.createServer((socket) => {
 			contentType = 'text/plain';
 			contentLength = responseBody.length;
 			responseHeaders = `HTTP/1.1 200 OK\r\n` +
-		`Content-Type: ${contentType}\r\n` +
-		`Content-Length: ${contentLength}\r\n` +
-		`\r\n`;
+				`Content-Type: ${contentType}\r\n` +
+				`Content-Length: ${contentLength}\r\n` +
+				`\r\n`;
 		}
 		else if (path.startsWith('/echo/')) {
 			const message = path.slice(6);
@@ -27,9 +28,9 @@ const server = net.createServer((socket) => {
 			contentType = 'text/plain';
 			contentLength = responseBody.length;
 			responseHeaders = `HTTP/1.1 200 OK\r\n` +
-		`Content-Type: ${contentType}\r\n` +
-		`Content-Length: ${contentLength}\r\n` +
-		`\r\n`;
+				`Content-Type: ${contentType}\r\n` +
+				`Content-Length: ${contentLength}\r\n` +
+				`\r\n`;
 		}
 		else if (path === '/user-agent') {
 			const userAgentHeader = request
@@ -44,14 +45,36 @@ const server = net.createServer((socket) => {
 				`Content-Length: ${contentLength}\r\n` +
 				`\r\n`;
 		}
+		else if (path.startsWith('/files/')) {
+			const filePath = path.substring(1);
+
+			if (fs.existsSync(`${filePath}`)) {
+				responseBody = fs.readFileSync(`${filePath}`, 'utf8');
+				contentType = 'application/octet-stream';
+				contentLength = responseBody.length;
+				responseHeaders = `HTTP/1.1 200 OK\r\n` +
+					`Content-Type: ${contentType}\r\n` +
+					`Content-Length: ${contentLength}\r\n` +
+					`\r\n`;
+			}
+			else {
+				responseBody = '404 Not Found';
+				contentType = 'text/plain';
+				contentLength = responseBody.length;
+				responseHeaders = `HTTP/1.1 404 Not Found\r\n` +
+					`Content-Type: ${contentType}\r\n` +
+					`Content-Length: ${contentLength}\r\n` +
+					`\r\n`;
+			}
+		}
 		else {
 			responseBody = '404 Not Found';
 			contentType = 'text/plain';
 			contentLength = responseBody.length;
 			responseHeaders = `HTTP/1.1 404 Not Found\r\n` +
-		`Content-Type: ${contentType}\r\n` +
-		`Content-Length: ${contentLength}\r\n` +
-		`\r\n`;
+				`Content-Type: ${contentType}\r\n` +
+				`Content-Length: ${contentLength}\r\n` +
+				`\r\n`;
 		}
 
 		socket.write(responseHeaders);
@@ -61,6 +84,6 @@ const server = net.createServer((socket) => {
 
 });
 
-server.listen(PORT, 'localhost',() => {
+server.listen(PORT, 'localhost', () => {
 	console.log(`Server is listening on port http://localhost:${PORT}`);
 });
